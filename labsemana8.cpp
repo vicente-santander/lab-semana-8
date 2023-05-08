@@ -75,10 +75,37 @@ Node* maxval(Node* root){ // ejercicio 6
 	maxval(root->right);
 }
 
-void free(Node* root, int elim) {
+Node* remove(Node* root, int data){  // ejercicio 7
+
+	// Caso base: si el árbol está vacío
+	if (root == NULL) {
+		return root;
+	}
 	
+	// Buscamos el nodo que deseamos eliminar
+	if (data < root->data) {
+	    root->left = remove(root->left, data);
+	} else if (data > root->data) {
+	    root->right = remove(root->right, data);
+	} else {	
+	    // Caso 1 y 2: el nodo no tiene hijos o tiene un hijo
+	    if (root->left == NULL) {
+	        Node* temp = root->right;
+	        delete root;
+	        return temp;
+	    } else if (root->right == NULL) {
+	        Node* temp = root->left;
+	        delete root;
+	        return temp;
+	    }
+	    
+	    // Caso 3: el nodo tiene dos hijos
+	    Node* temp = minval(root->right);
+	    root->data = temp->data;
+	    root->right = remove(root->right, temp->data);
+	}
 	
-	
+	return root;
 }
 
 int main(){
@@ -89,6 +116,8 @@ int main(){
 	root = insert(root,5);
 	root = insert(root,2);
 	root = insert(root,9);
+	root = insert(root,12);
+	root = insert(root,1);
 	
 	printTree(root);
 	
@@ -97,8 +126,13 @@ int main(){
 	
 	cout << "el valor minimo es: " << minval(root)->data <<endl;
 	cout << "el valor maximo es: " << maxval(root)->data <<endl;
-	free(root,5);
 	
+	remove(root, 2);
+	remove(root, 3);
+	remove(root, 10);
+	
+	
+	printTree(root);
 	
 	
 	return 0;
